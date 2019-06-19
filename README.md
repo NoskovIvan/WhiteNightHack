@@ -38,11 +38,12 @@ Advantages of Smart Rechanger for prorerty owners:
  - Additional cashflow from better utilising parking lots
  - Additional cashflow from EVcharger
  - Additional cashflow from crossselling
- - Simply to install equipment andlow barrier to entry to market
+ - Simply to install equipment and low barrier to entry to market
  - All processes are automated
 
 # Finally
 
+During this hackathon, we reviewed the logic of the project, implemented smart contracts and developed an interface.
 
 # Contacts
 
