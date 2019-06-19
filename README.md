@@ -28,23 +28,18 @@ Any person or company can register in the application who has parking or chargin
 
 Advantages of Smart Rechanger for drivers:
 
-• Driving car by optimal way
-• Focus on experience not on
-EV charger avaibility
-• Going directly to parking lot
-not wasting time to find one
-• Ability to compare prices and
-choose the best fit
+ - Driving car by optimal way
+ - Focus on experience not on EV charger avaibility
+ - Going directly to parking lot not wasting time to find one
+ - Ability to compare prices andchoose the best fit
 
 Advantages of Smart Rechanger for prorerty owners:
-• Additional cashflow from better
-utilising parking lots
-• Additional cashflow from EV
-charger
-• Additional cashflow from crossselling
-• Simply to install equipment and
-low barrier to entry to market
-• All processes are automated
+
+ - Additional cashflow from better utilising parking lots
+ - Additional cashflow from EVcharger
+ - Additional cashflow from crossselling
+ - Simply to install equipment andlow barrier to entry to market
+ - All processes are automated
 
 # Finally
 
