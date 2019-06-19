@@ -2,7 +2,8 @@
 Solution for WhiteNightHack from IBI Solutions
 # Name
 
-<img src=".png" width="300px">
+#Smart Recharger
+AIRBNB for electric cars
 
 # Structure
 
