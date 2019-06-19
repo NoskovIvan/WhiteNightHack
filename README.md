@@ -2,7 +2,7 @@
 Solution for WhiteNightHack from IBI Solutions
 # Name
 
-#Smart Recharger
+# Smart Rechanger
 AIRBNB for electric cars
 
 # Structure
