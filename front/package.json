@@ -1,0 +1,52 @@
+{
+  "name": "promise",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mapbox/mapbox-gl-directions": "^4.0.1",
+    "@mapbox/mapbox-gl-language": "^0.10.0",
+    "axios": "^0.18.0",
+    "maki": "^2.1.0",
+    "mapbox-gl": "^1.0.0",
+    "node-fetch": "^2.6.0",
+    "react": "^16.3.0",
+    "react-cookie": "^4.0.0",
+    "react-dom": "^16.3.0",
+    "react-google-maps": "^9.4.5",
+    "react-map-gl": "^5.0.3",
+    "react-mapbox-gl": "^4.4.0",
+    "react-redux": "^7.0.3",
+    "react-router": "^3.2.1",
+    "react-router-dom": "^5.0.0",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "1.1.2",
+    "react-transition-group": "^4.0.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-calendar-react": "^0.14.4",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.86.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:3001"
+}

@@ -1,0 +1,428 @@
+//------------------------------------------------------------------------------
+//
+//   Copyright 2019 Fetch.AI Limited
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+//
+//------------------------------------------------------------------------------
+
+// This contract require release 0.4.0 or above
+// Note that this is experimental functionality
+
+function main()
+  var owner = Address("2ifr5dSFRAnXexBMC3HYEVp3JHSuz7KBPXWDRBV4xdFrqGy6R9");
+  var new_member = Address("MnrRHdvCkdZodEwM855vemS5V3p2hiWmcSQ8JEzD4ZjPdsYtB");
+
+  createChargeContract(owner);
+  if(isChargeMember(new_member))
+    panic("address not supposed to be a charge member just yet.");
+  endif
+
+  addChargeProvider(new_member, owner);
+  if(!isChargeMember(new_member))
+    panic("address is supposed to be a charge member.");
+  endif
+
+endfunction
+
+@init
+function init(owner:Address)
+   createChargeContract(owner);
+   createParkingContract(owner);
+endfunction
+
+function createChargeContract(owner: Address)
+  // We add the owner as the first provider of charge stations
+  addChargeProvider(owner, owner);
+
+  // The initial fleet is empty
+  var fleet_state = State< Array< Address > >("fleet");
+  fleet_state.set(Array< Address >(0));
+
+  // Charge tokens
+  var supply = 1933423612u64;
+  var supply_state = State< UInt64 >("token_supply");  
+  supply_state.set(supply);
+
+  // Setting account balance
+  var balance_state = ShardedState< UInt64 >("account");
+  balance_state.set( owner, supply );
+endfunction
+
+function isChargeMember(member: Address) : Bool
+  var charge_providers_state = State< Array< Address > >("charge_providers");
+  var charge_providers = charge_providers_state.get( Array< Address >(0) );
+
+  var valid_member = false;
+  for(i in 0:charge_providers.count()-1)
+    if(charge_providers[i] == member)
+      valid_member = true;
+      break;
+    endif
+  endfor
+
+  return valid_member;
+endfunction
+
+function createParkingContract(owner: Address)
+// We add the owner as the first provider of parking places
+addParkingProvider(owner, owner);
+
+// The initial fleet is empty
+var fleet_state = State< Array< Address > >("fleet");
+fleet_state.set(Array< Address >(0));
+
+// Parking tokens
+var supply = 1933423612u64;
+var supply_state = State< UInt64 >("token_supply");
+supply_state.set(supply);
+
+// Setting account balance
+var balance_state = ShardedState< UInt64 >("account");
+balance_state.set( owner, supply );
+endfunction
+
+function isParkingMember(member: Address) : Bool
+var parking_providers_state = State< Array< Address > >("parking_providers");
+var parking_providers = parking_providers_state.get( Array< Address >(0) );
+
+var valid_member = false;
+for(i in 0:parking_providers.count()-1)
+if(parking_providers[i] == member)
+valid_member = true;
+break;
+endif
+endfor
+
+return valid_member;
+endfunction
+
+@query
+function getChargeProviderSize() : Int32
+  var charge_provider_state = State< Array< Address > >("charge_providers");
+  var charge_provider = charge_provider_state.get(Array< Address>(0));
+  return charge_provider.count();
+endfunction
+
+@query
+function getParkingProviderSize() : Int32
+var parking_provider_state = State< Array< Address > >("parking_providers");
+var parking_provider = parking_provider_state.get(Array< Address>(0));
+return parking_provider.count();
+endfunction
+
+@query
+function getChargeFleetSize() : Int32
+var fleet_state = State< Array< Address > >("fleet");
+var fleet = fleet_state.get(Array< Address>(0));
+return fleet.count();
+endfunction
+
+@query
+function getParkingFleetSize() : Int32
+var fleet_state = State< Array< Address > >("fleet");
+var fleet = fleet_state.get(Array< Address>(0));
+return fleet.count();
+endfunction
+
+@action
+function addChargeProvider(charge_provider: Address, member: Address) : Bool
+//  if(!member.signedTx())
+//    panic("refering member did not sign contract");
+//  endif
+
+  // Fetching the provider state variable
+  var charge_providers_state = State< Array< Address > >("charge_providers");
+  var charge_providers = charge_providers_state.get( Array< Address >(0) );
+
+  // Checking that condition for adding is met
+  var can_add_charge_provider = false;
+  if( charge_providers.count() == 0 )
+    can_add_charge_provider = true;
+  else
+    for(i in 0:charge_providers.count()-1)
+      if(charge_providers[i] == member)
+        can_add_charge_provider = true;
+        break;
+      endif
+    endfor
+  endif
+
+  if(!can_add_charge_provider)
+    panic("only existing members can add new members");
+  endif
+
+  // Storing the updated list of members
+  charge_providers.append(charge_provider);
+  charge_providers_state.set(charge_providers);
+
+  return true;
+endfunction
+
+@action
+function addParkingProvider(parking_provider: Address, member: Address) : Bool
+//  if(!member.signedTx())
+//    panic("refering member did not sign contract");
+//  endif
+
+// Fetching the provider state variable
+var parking_providers_state = State< Array< Address > >("parking_providers");
+var parking_providers = parking_providers_state.get( Array< Address >(0) );
+
+// Checking that condition for adding is met
+var can_add_parking_provider = false;
+if( parking_providers.count() == 0 )
+can_add_parking_provider = true;
+else
+for(i in 0:parking_providers.count()-1)
+if(parking_providers[i] == member)
+can_add_parking_provider = true;
+break;
+endif
+endfor
+endif
+
+if(!can_add_parking_provider)
+panic("only existing members can add new members");
+endif
+
+// Storing the updated list of members
+parking_providers.append(parking_provider);
+parking_providers_state.set(parking_providers);
+
+return true;
+endfunction
+
+
+@action
+function addCharge(charge: Address, chargemember: Address, latitude: String, longitude: String)
+//  if(!charge.signedTx())
+//    panic("member did not sign contract");
+//  endif
+
+//  if(!charge.signedTx())
+//    panic("charge member did not sign contract");
+//  endif
+
+  if(!isChargeMember(chargemember))
+    panic("only charge members can add charge stations to the fleet.");
+  endif
+
+  // Adding the charge station to the fleet
+  var fleet_state = State< Array< Address > >("fleet");
+  var fleet = fleet_state.get( Array< Address >(0) );
+  fleet.append(charge);
+
+  // Charge
+  var charge_owner     = ShardedState< Address  >("charge.owner");
+  var charge_latitude  = ShardedState< String  >("charge.latitude");
+  var charge_longitude = ShardedState< String  >("charge.longitude");
+  var charge_intervals = ShardedState< Array<String> >("charge.intervals");
+  var charge_booked_by = ShardedState< Array<Address> >("charge.booked_by");
+
+  var intervals = Array<String>(4);
+  intervals[0] = "0:00 - 6:00";
+  intervals[1] = "6:00 - 12:00";
+  intervals[2] = "12:00 - 18:00";
+  intervals[3] = "18:00 - 24:00";
+
+  var books = Array<Address>(4);
+  books[0] = charge;
+  books[1] = charge;
+  books[2] = charge;
+  books[3] = charge;
+
+
+  charge_owner.set(charge, chargemember);
+  charge_latitude.set(charge, latitude);
+  charge_longitude.set(charge, longitude);
+  charge_intervals.set(charge, intervals);
+  charge_booked_by.set(charge, books);
+
+  fleet_state.set(fleet);
+endfunction
+
+@action
+function addParking(parking: Address, parkingmember: Address, latitude: String, longitude: String)
+//  if(!parking.signedTx())
+//    panic("member did not sign contract");
+//  endif
+
+//  if(!parking.signedTx())
+//    panic("parking member did not sign contract");
+//  endif
+
+if(!isParkingMember(parkingmember))
+panic("only parking members can add parking places to the fleet.");
+endif
+
+// Adding the parking place to the fleet
+var fleet_state = State< Array< Address > >("fleet");
+var fleet = fleet_state.get( Array< Address >(0) );
+fleet.append(parking);
+
+// Parking
+var parking_owner     = ShardedState< Address  >("parking.owner");
+var parking_latitude  = ShardedState< String  >("parking.latitude");
+var parking_longitude = ShardedState< String  >("parking.longitude");
+var parking_intervals = ShardedState< Array<String> >("parking.intervals");
+var parking_booked_by = ShardedState< Array<Address> >("parking.booked_by");
+
+var intervals = Array<String>(4);
+intervals[0] = "0:00 - 6:00";
+intervals[1] = "6:00 - 12:00";
+intervals[2] = "12:00 - 18:00";
+intervals[3] = "18:00 - 24:00";
+
+var books = Array<Address>(4);
+books[0] = parking;
+books[1] = parking;
+books[2] = parking;
+books[3] = parking;
+
+
+parking_owner.set(parking, parkingmember);
+parking_latitude.set(parking, latitude);
+parking_longitude.set(parking, longitude);
+parking_intervals.set(parking, intervals);
+parking_booked_by.set(parking, books);
+
+fleet_state.set(fleet);
+endfunction
+
+
+@action
+function chargeUpdate(charge: Address, charge_booker: Address, time: UInt64)
+//  if(!charge.signedTx())
+//    panic("charge did not sign contract");
+//  endif
+
+  // Charge station
+  var charge_booked_by   = ShardedState< Array<Address> >("charge.booked_by");
+  var books = Array<Address>(4);
+  books[time] = charge_booker;
+
+  charge_booked_by.set(charge, books);
+
+endfunction
+
+@action
+function parkingUpdate(parking: Address, parking_booker: Address, time: UInt64)
+//  if(!parking.signedTx())
+//    panic("parking did not sign contract");
+//  endif
+
+// Parking place
+var parking_booked_by   = ShardedState< Array<Address> >("parking.booked_by");
+var books = Array<Address>(4);
+books[time] = parking_booker;
+
+parking_booked_by.set(parking, books);
+
+endfunction
+
+
+@action
+function startCharge(charge: Address, driver: Address, max_cost : UInt64, time: UInt64)
+//  if(!charge.signedTx())
+//    panic("charge did not sign contract");
+//  endif
+
+//  if(!driver.signedTx())
+//    panic("driver did not sign contract");
+//  endif
+
+  var balance_state = ShardedState< UInt64 >("account");
+  var charge_booked_by = ShardedState< Array<Address> >("charge.charge_booked_by");
+  var books = charge_booked_by.get(charge);
+  if(books[time] != charge)
+    panic("charge is already in use.");
+  endif 
+
+  var balance = balance_state.get( driver, 0u64 );
+  if(balance < max_cost)
+    panic("insufficient funds");
+  endif
+
+  balance = balance - max_cost;
+  var charge_deposit = ShardedState< UInt64 >("charge.deposit");
+  // var charge_block_time = ShardedState< UInt64 >("charge.block_time");
+
+  balance_state.set(driver, balance);
+  charge_deposit.set(charge, max_cost);
+  //  charge_block_time.set(charge, getBlockNumber());
+  books[time] = driver;
+  charge_booked_by.set(charge, books);
+
+endfunction
+
+@action
+function startParking(parking: Address, driver: Address, max_cost : UInt64, time: UInt64)
+//  if(!parking.signedTx())
+//    panic("parking did not sign contract");
+//  endif
+
+//  if(!driver.signedTx())
+//    panic("driver did not sign contract");
+//  endif
+
+var balance_state = ShardedState< UInt64 >("account");
+var parking_booked_by = ShardedState< Array<Address> >("parking.parking_booked_by");
+var books = parking_booked_by.get(parking);
+if(books[time] != parking)
+panic("parking is already in use.");
+endif
+
+var balance = balance_state.get( driver, 0u64 );
+if(balance < max_cost)
+panic("insufficient funds");
+endif
+
+balance = balance - max_cost;
+var parking_deposit = ShardedState< UInt64 >("parking.deposit");
+// var parking_block_time = ShardedState< UInt64 >("parking.block_time");
+
+balance_state.set(driver, balance);
+parking_deposit.set(parking, max_cost);
+//  parking_block_time.set(parking, getBlockNumber());
+books[time] = driver;
+parking_booked_by.set(parking, books);
+
+endfunction
+
+
+@action
+function settleCharge(charge: Address, driver: Address, max_cost : UInt64, time : UInt64)
+//  if(!charge.signedTx())
+//    panic("charge did not sign contract");
+//  endif
+
+//  if(!driver.signedTx())
+//    panic("driver did not sign contract");
+//  endif
+  
+  // TODO: Yet to be implemented.
+endfunction
+
+@action
+function settleParking(parking: Address, driver: Address, max_cost : UInt64, time : UInt64)
+//  if(!parking.signedTx())
+//    panic("parking did not sign contract");
+//  endif
+
+//  if(!driver.signedTx())
+//    panic("driver did not sign contract");
+//  endif
+
+// TODO: Yet to be implemented.
+endfunction
