@@ -31,6 +31,6 @@ Solution for WhiteNightHack from IBI Solutions
 
 # Contacts
 
-Ivan Noskov - vanya170595@gmail.com
-Ivan Fedorov - if1242@yandex.ru
+Ivan Noskov - vanya170595@gmail.com,
+Ivan Fedorov - if1242@yandex.ru,
 Boris Koveshnikov - bkovesh@gmail.com
