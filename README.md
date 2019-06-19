@@ -7,7 +7,7 @@ Structure
 About
 Solution
 How does it work?
-Finally
+
 Contacts
 
 
