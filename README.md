@@ -24,8 +24,27 @@ Smart Rechanger is decentralized rechargers  parking network based on decentrali
 
 # How does it work? 
 
-<img src=".jpg" width="500px">
+Any person or company can register in the application who has parking or charging stations and mark these places on the map. A driver who needs a parking or charging space can also register there and choose parking or charging and time which he needs. At the same time, a smart contract is immediately formed, which contains information about the driver, his arrival time and the cost of the service. The smart contract guarantees the driver that at the time he chooses a parking or charging space, the station owner is guaranteed that this will be paid.
 
+Advantages of Smart Rechanger for drivers:
+
+• Driving car by optimal way
+• Focus on experience not on
+EV charger avaibility
+• Going directly to parking lot
+not wasting time to find one
+• Ability to compare prices and
+choose the best fit
+
+Advantages of Smart Rechanger for prorerty owners:
+• Additional cashflow from better
+utilising parking lots
+• Additional cashflow from EV
+charger
+• Additional cashflow from crossselling
+• Simply to install equipment and
+low barrier to entry to market
+• All processes are automated
 
 # Finally
 
