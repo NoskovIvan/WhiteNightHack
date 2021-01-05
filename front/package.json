@@ -5,7 +5,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-directions": "^4.0.1",
     "@mapbox/mapbox-gl-language": "^0.10.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "maki": "^2.1.0",
     "mapbox-gl": "^1.0.0",
     "node-fetch": "^2.6.0",
